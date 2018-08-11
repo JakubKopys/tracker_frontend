@@ -1,9 +1,15 @@
 import React from 'react';
 import App, { Container } from 'next/app';
+
+// MaterialUI
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import JssProvider from 'react-jss/lib/JssProvider';
 import getPageContext from '../lib/context';
+
+// Redux
+import withReduxStore from '../lib/with-redux-store'
+import { Provider } from 'react-redux'
 
 class MyApp extends App {
   constructor(props) {
@@ -22,7 +28,7 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps } = this.props;
+    const { Component, pageProps, reduxStore } = this.props;
     return (
       <Container>
         {/* Wrap every page in Jss and Theme providers */}
@@ -40,7 +46,9 @@ class MyApp extends App {
             <CssBaseline />
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}
-            <Component pageContext={this.pageContext} {...pageProps} />
+            <Provider store={reduxStore}>
+              <Component pageContext={this.pageContext} {...pageProps} />
+            </Provider>
           </MuiThemeProvider>
         </JssProvider>
       </Container>
@@ -48,4 +56,4 @@ class MyApp extends App {
   }
 }
 
-export default MyApp;
+export default withReduxStore(MyApp);
